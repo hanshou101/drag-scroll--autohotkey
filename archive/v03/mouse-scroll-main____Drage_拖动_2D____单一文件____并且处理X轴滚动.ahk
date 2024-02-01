@@ -47,7 +47,8 @@ movelimit := 15			; max amount of scroll at once
 S_y := 20 * ( 1.5 / ratio / change_调整频率和单次行数 * 1 )  						; unit distance (higher S = lower speed)
 S_x := 20 * ( 1.5 / ratio / change_调整频率和单次行数 * 1.5 )  						; unit distance (higher S = lower speed)
 ; 每次检测（之间），进行睡眠的毫秒
-T := 20 * ( 1 / ratio )					; scan frequency in MS (
+; 如果要丝滑体验，可能就要牺牲性能
+T := 20 * ( ( 1 / 5 ) / ratio )					; scan frequency in MS (
 
 
 /*
