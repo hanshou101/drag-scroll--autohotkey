@@ -20,11 +20,11 @@ swapY := true
 
 ; swap := true 				; swap scroll direction
 ratio = 1
-k := 1 / ratio					; scroll speed coefficient (higher k means higher speed)
+k := 1 * ( 2 / ratio )					; scroll speed coefficient (higher k means higher speed)
 
 ; === Internal settings ===
-scrollsLimit := 10			; max amount of scroll at once 
-S := 10 / ratio						; unit distance (higher S = lower speed)
+scrollsLimit := 10 * ( 1.5 )			; max amount of scroll at once
+S := 10 * ( 3 / ratio )						; unit distance (higher S = lower speed)
 
 ; ==============
 
@@ -41,8 +41,9 @@ dSumY := 0
 mousegetpos, mxFix, myFix
 scrollsTotal := 0
 dLimit := 50
-T := 20 / ratio					; scan frequency in MS
-TC := 350					; double click speed MS
+T := 20 * ( 0.5 / ratio )					; scan frequency in MS
+; 如果快速连续拖动，会触发【右键菜单】的话，就调小这个值。
+TC := 350 * ( 0.5 )					; double click speed MS
 ticker := 1000					; tick counter ms
 
 loop 
