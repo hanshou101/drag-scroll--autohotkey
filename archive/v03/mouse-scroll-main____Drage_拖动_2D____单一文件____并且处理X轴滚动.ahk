@@ -44,7 +44,8 @@ k := 6 * ( ( 1 / 3 ) / ratio / change_调整频率和单次行数 )						; scrol
 movelimit := 15			; max amount of scroll at once
 
 ; 【触发器】的距离
-S := 20 * ( 1.5 / ratio / change_调整频率和单次行数 )  						; unit distance (higher S = lower speed)
+S_y := 20 * ( 1.5 / ratio / change_调整频率和单次行数 * 1 )  						; unit distance (higher S = lower speed)
+S_x := 20 * ( 1.5 / ratio / change_调整频率和单次行数 * 1.5 )  						; unit distance (higher S = lower speed)
 ; 每次检测（之间），进行睡眠的毫秒
 T := 20 * ( 1 / ratio )					; scan frequency in MS (
 
@@ -108,12 +109,12 @@ loop
 
 
     ; 【触发器】触发  次数。
-	movesY := dyTotal // S           ; 整除
-	movesX := dxTotal // S
+	movesY := dyTotal // S_y           ; 整除
+	movesX := dxTotal // S_x
 
-	; 扣减，已被执行的次数  （保留，余数之类）。
-	dyTotal := dyTotal - movesY * S					; calculate remainder after division
-	dxTotal := dxTotal - movesX * S
+	; 扣减，已被执行的次数  （去除，余数之类） （WARN 不保留余数 ）。
+	dyTotal := dyTotal - movesY * S_y					; calculate remainder after division
+	dxTotal := dxTotal - movesX * S_x
 
 	; 计算滚动方向
 	dy := (movesY >= 0) ^ swapY					; get direction
@@ -164,6 +165,7 @@ loop
 			send {rbutton}
         ; TIP 每松开一次。重置一下。
 		movesTotalY := 0
+		movesTotalX := 0
 	}
 }
 
