@@ -158,6 +158,13 @@ loop
         movesTotalX := movesTotalX + abs(movesX)           ; TIP 跟着修复。
 
 	}
+/*
+TODO 目前一个已知Bug
+        在【IDEA】中，点击【右键后】。
+                再去点击  任务栏、托盘区  的右键，会发现    点不出来。
+                        临时解决方案：
+                                先在任务栏点一下左键，然后再点一下右键。
+*/
 	; TIP 松开时
 	if (pan_off = true) {
 	    ; TIP 此处，也是【&&】表示  短路与；  【||】表示  短路或。
