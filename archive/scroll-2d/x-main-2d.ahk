@@ -14,13 +14,17 @@ SetMouseDelay, -1
 CoordMode, Mouse, Screen
 ; === User settings ===
 swapX := false 
-swapY := true 
+swapY := true
+
+
+
 ; swap := true 				; swap scroll direction
-k := 1					; scroll speed coefficient (higher k means higher speed)
+ratio = 1
+k := 1 / ratio					; scroll speed coefficient (higher k means higher speed)
 
 ; === Internal settings ===
 scrollsLimit := 10			; max amount of scroll at once 
-S := 10						; unit distance (higher S = lower speed)
+S := 10 / ratio						; unit distance (higher S = lower speed)
 
 ; ==============
 
@@ -37,7 +41,7 @@ dSumY := 0
 mousegetpos, mxFix, myFix
 scrollsTotal := 0
 dLimit := 50
-T := 20					; scan frequency in MS 
+T := 20 / ratio					; scan frequency in MS
 TC := 350					; double click speed MS
 ticker := 1000					; tick counter ms
 
