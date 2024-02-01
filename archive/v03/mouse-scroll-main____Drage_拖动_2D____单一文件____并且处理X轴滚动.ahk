@@ -151,9 +151,9 @@ loop
                         send  {wheelright %nXabs%}
         */
         if (dx = 1)
-            send, {wheelleft %ny% }
+            send, {wheelleft %nx% }
         if (dx = 0)
-            send, {wheelright %ny%}
+            send, {wheelright %nx%}
         movesTotalX := movesTotalX + abs(movesX)           ; TIP 跟着修复。
 
 	}
