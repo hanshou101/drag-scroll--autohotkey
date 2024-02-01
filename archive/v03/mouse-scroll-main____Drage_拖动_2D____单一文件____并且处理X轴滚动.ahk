@@ -14,6 +14,8 @@ SendMode Input  ; Recommended for new scripts due to its superior speed and reli
 SetStoreCapsLockMode, Off
 #InstallMouseHook
 
+
+
 ; === User settings ===
 ; swap := false 
 swap := true 				; swap scroll direction
@@ -95,3 +97,30 @@ loop
 		movesTotal := 0
 	}
 }
+
+
+
+
+
+;————————————————————————————————————————————————————————————————————————
+;————————————————————————————————————————————————————————————————————————
+;————————————————————————————————————————————————————————————————————————
+/*
+TIP
+    参考资料：
+        In AutoHotKey, how do I block LButton from being sent if it's used in the hotkey context but not if it's used elsewhere? - Stack Overflow    https://stackoverflow.com/a/38405557/6264260
+    似乎，必须放在【最后面】，才不会【阻塞脚本执行】。
+        …………………………
+*/
+
+
+; 默认关闭【右键】的默认行为。  全部改为【手动触发】：    如【send {rbutton}】来触发。
+; block the right mouse button
+rbutton::
+    test_a := 1
+return
+
+;————————————————————————————————————————————————————————————————————————
+;————————————————————————————————————————————————————————————————————————
+;————————————————————————————————————————————————————————————————————————
+
