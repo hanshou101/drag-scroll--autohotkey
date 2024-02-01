@@ -17,12 +17,13 @@ SetStoreCapsLockMode, Off
 ; === User settings ===
 ; swap := false 
 swap := true 				; swap scroll direction
-k := 6						; scroll speed coefficient (higher k means higher speed)
+ratio := 1
+k := 6 / ratio / 3						; scroll speed coefficient (higher k means higher speed)
 
 ; === Internal settings ===
 movelimit := 15			; max amount of scroll at once 
-S := 20						; unit distance (higher S = lower speed)
-T := 20					; scan frequency in MS (
+S := 20 / ratio * 1.5						; unit distance (higher S = lower speed)
+T := 20 / ratio					; scan frequency in MS (
 
 ; ==============
 
