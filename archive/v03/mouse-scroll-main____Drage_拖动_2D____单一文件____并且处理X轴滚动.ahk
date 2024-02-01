@@ -8,6 +8,12 @@ so the rbutton is blocked to prevent the context menu popup.
 (see: rbutton-block.ahk)  
 */
 
+/*
+——————————————————————————————————————————————————————————————————————————————————
+脚本Meta定义
+——————————————————————————————————————————————————————————————————————————————————
+*/
+
 #SingleInstance force
 #NoEnv  ; Recommended for performance and compatibility with future AutoHotkey releases.
 SendMode Input  ; Recommended for new scripts due to its superior speed and reliability.
@@ -16,9 +22,19 @@ SetStoreCapsLockMode, Off
 
 
 
+/*
+——————————————————————————————————————————————————————————————————————————————————
+用户配置
+——————————————————————————————————————————————————————————————————————————————————
+*/
 ; === User settings ===
+
+; 设置，是否滚动翻转。
 ; swap := false 
-swap := true 				; swap scroll direction
+swapY := true 				; swap scroll direction
+swapX := false 				; swap scroll direction
+
+
 ratio := 1
 change_调整频率和单次行数 :=  2              ;  增加频率，减少【单次行数】
 ; 【执行器】的次数
@@ -32,14 +48,31 @@ S := 20 * ( 1.5 / ratio / change_调整频率和单次行数 )  						; unit dis
 ; 每次检测（之间），进行睡眠的毫秒
 T := 20 * ( 1 / ratio )					; scan frequency in MS (
 
-; ==============
+
+/*
+——————————————————————————————————————————————————————————————————————————————————
+临时变量。
+——————————————————————————————————————————————————————————————————————————————————
+*/
 
 ; 【yp】是前一次的  鼠标y值
-mousegetpos, , yp									; get mouse Y position
+mousegetpos xp , yp									; get mouse Y position
 ; panp := getkeystate("rbutton", "P")					; save key state / set the key used to scroll
 dy := 0
 dyTotal := 0
-movesTotal := 0
+movesTotalY := 0
+; TIP 【X】的另一套
+dx := 0
+dxTotal := 0
+movesTotalX := 0
+
+
+
+/*
+——————————————————————————————————————————————————————————————————————————————————
+正式代码。循环
+——————————————————————————————————————————————————————————————————————————————————
+*/
 
 loop 
 {
@@ -55,46 +88,82 @@ loop
 	pan_off := (pan < panp)							; check if key state is changed 
 	panp := pan     ; 更新设置
 
+    /*
+        处理，X和Y的差异。
+        TODO 将来，感觉这一块，是可以    【直接抽取】  的。
+    */
+
 	; y坐标
-	mousegetpos, , y							; get current mouse position Y
+	mousegetpos x , y							; get current mouse position Y
 	; 变化的y坐标
 	dy := k * (y - yp)						; relative mouse movement
+	dx := k * (x - xp)
+	;
 	yp := y									; save y position
+	xp := x
 
 	; 自从【上一次按下】以来，  y变化的总值
 	dyTotal := dyTotal + dy
+	dxTotal := dxTotal + dx
+
+
     ; 【触发器】触发  次数。
-	moves := dyTotal // S           ; 整除
+	movesY := dyTotal // S           ; 整除
+	movesX := dxTotal // S
 
 	; 扣减，已被执行的次数  （保留，余数之类）。
-	dyTotal := dyTotal - moves * S					; calculate remainder after division
+	dyTotal := dyTotal - movesY * S					; calculate remainder after division
+	dxTotal := dxTotal - movesX * S
 
 	; 计算滚动方向
-	d := (moves >= 0) ^ swap					; get direction
+	dy := (movesY >= 0) ^ swapY					; get direction
+	dx := (movesX >= 0) ^ swapX
 
 	; 计算，最终滚动的行数
-	n := min(abs(moves), movelimit)
+	ny := min(abs(movesY), movelimit)
+	nx := min(abs(movesX), movelimit)
 	; tooltip,  %moves% -- %dy%
 
 
 	; TIP 按下时
 	if (pan = true ) {
+        /*
+        ——————————————————————————————————————————————————————————————————————————————————
+        原本，是【垂直滚动】
+        */
 	    ; 向下拖动
-		if (d = 1) 
-			send, {wheeldown %n% }
+		if (dy = 1)
+			send, {wheeldown %ny% }
         ; 向上拖动
-		if (d = 0) 
-			send, {wheelup %n%}
+		if (dy = 0)
+			send, {wheelup %ny%}
         ; 总拖动行数
 		; movesTotal := movesTotal + moves              ; TIP 原代码，我感觉有Bug。会触发【向上N行、再向下N行  回到远点  仍会触发  右键菜单】    的行为
-		movesTotal := movesTotal + abs(moves)           ; TIP 加上绝对值，只要滚动过  就不再可能【为0】  也不再可能【触发  右键菜单】  。
+		movesTotalY := movesTotalY + abs(movesY)           ; TIP 加上绝对值，只要滚动过  就不再可能【为0】  也不再可能【触发  右键菜单】  。
+
+
+        /*
+        ——————————————————————————————————————————————————————————————————————————————————
+        加上【水平滚动】：
+                if (directionX = 1)
+                        send  {wheelleft %nXabs%}
+                if (directionX = 0)
+                        send  {wheelright %nXabs%}
+        */
+        if (dx = 1)
+            send, {wheelleft %ny% }
+        if (dx = 0)
+            send, {wheelright %ny%}
+        movesTotalX := movesTotalX + abs(movesX)           ; TIP 跟着修复。
+
 	}
 	; TIP 松开时
 	if (pan_off = true) {
-		if (movesTotal = 0) 
+	    ; TIP 此处，也是【&&】表示  短路与；  【||】表示  短路或。
+		if ( movesTotalY = 0 && movesTotalX = 0 )
 			send {rbutton}
         ; TIP 每松开一次。重置一下。
-		movesTotal := 0
+		movesTotalY := 0
 	}
 }
 
