@@ -59,7 +59,7 @@ is_open := 0
 
 ; Ctrl + Alt + Z
 ; 【*号】  即使按下了其它的键，也仍然会触发。
-*^!Z::
+*^!F12::
     ; MsgBox %is_open%
     if (is_open == 1){
         is_open := 0
@@ -71,7 +71,8 @@ is_open := 0
         is_open := 1
         open_timer()
     }
-    MsgBox %is_open%
+    ; MsgBox %is_open%
+    TrayTip "TitleA", "Flag:  %is_open%  "
 return
 
 /*
@@ -81,10 +82,15 @@ return
 
 open_timer(){
     SetTimer, sebd_RB, 8000
-    SetTimer, send_F9, 123
-    SetTimer, send_F10, 234
-    SetTimer, send_F11, 345
-    SetTimer, send_F12, 456
+    /*
+
+
+    */
+    SetTimer, send_F8, 567
+    SetTimer, send_F9, 456
+    SetTimer, send_F10, 345
+    SetTimer, send_F11, 234
+    SetTimer, send_F12, 123
 }
 
 close_timer(){
@@ -102,10 +108,14 @@ close_timer(){
 
 sebd_RB:
     ;    Send {rbutton down}
-    Send {rbutton down}
-    sleep 150
+    Send {lbutton down}     ; 好像左键，不会打断平A
+    sleep 300
     ;    Send {rbutton up}
-    Send {rbutton up}
+    Send {lbutton up}
+return
+
+send_F8:
+    Send {F8}
 return
 
 send_F9:
